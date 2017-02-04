@@ -46,7 +46,7 @@ while True:
     frame = Util.getCurrentFrameMultiplier(0.5, 0.5)
     grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    frame_edges = cv2.canny(grey_frame, 290, 100)
+    frame_edges = cv2.Canny(grey_frame, 290, 100)
 
     lowerBound = np.array([cv2.getTrackbarPos('0', '6'), cv2.getTrackbarPos('1', '6'), cv2.getTrackbarPos('2', '6')])
     upperBound = np.array([cv2.getTrackbarPos('3', '6'), cv2.getTrackbarPos('4', '6'), cv2.getTrackbarPos('5', '6')])
