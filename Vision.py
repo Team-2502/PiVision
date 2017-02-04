@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import Util
+import EdgeTest as edge
 
 #on = Util.getCurrentFrameMultiplier(0.5, 0.5)
 #off = Util.getCurrentFrameMultiplier(0.5, 0.5)
@@ -8,6 +9,7 @@ import Util
 #sub = cv2.subtract(on, off);
 #hsv = cv2.cvtColor(sub, cv2.COLOR_BGR2HSV)
 
+# Make 7 windows
 Util.nw('0')
 Util.nw('1')
 Util.nw('2')
@@ -15,10 +17,12 @@ Util.nw('3')
 Util.nw('4')
 Util.nw('5')
 Util.nw('6')
+Util.nw('7')
 
 def null(_):
     return
 
+# Place a bunch of trackbars onto window 6
 cv2.createTrackbar('0', '6', 0, 255, null)
 cv2.createTrackbar('1', '6', 0, 255, null)
 cv2.createTrackbar('2', '6', 0, 255, null)
@@ -27,7 +31,9 @@ cv2.createTrackbar('3', '6', 255, 255, null)
 cv2.createTrackbar('4', '6', 255, 255, null)
 cv2.createTrackbar('5', '6', 255, 255, null)
 
+# Make a 3 by 3 matrix filled with ones
 kernel = np.ones((3, 3), np.uint8)
+
 #lowerBound = np.array([50, 100, 20])
 #upperBound = np.array([255, 255, 255])
 
@@ -38,6 +44,9 @@ while True:
 #    on = Util.getCurrentFrameMultiplier(0.5, 0.5)
 #    off = Util.getCurrentFrameMultiplier(0.5, 0.5)
     frame = Util.getCurrentFrameMultiplier(0.5, 0.5)
+    grey_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    frame_edges = cv2.canny(grey_frame, 290, 100)
 
     lowerBound = np.array([cv2.getTrackbarPos('0', '6'), cv2.getTrackbarPos('1', '6'), cv2.getTrackbarPos('2', '6')])
     upperBound = np.array([cv2.getTrackbarPos('3', '6'), cv2.getTrackbarPos('4', '6'), cv2.getTrackbarPos('5', '6')])
@@ -58,8 +67,6 @@ while True:
     erode2 = cv2.erode(threshold, kernel, iterations=5)
 
     image, contours, hierarchy = cv2.findContours(erode2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-#    contoursOut = Util.filterContours(contours, 400)
-
 #    cv2.imshow('Vid Cap', threshold)
 #    cv2.imshow('Vid Cap', outputThreshold)
 
@@ -70,6 +77,14 @@ while True:
     cv2.imshow('3', threshold)
     cv2.imshow('4', erode)
     cv2.imshow('5', erode2)
+    cv2.imshow('7', frame_edges)
+
+    if edge.isGear(frame_edges):
+        print("gear")
+    elif edge.isBoiler(frame_edges):
+        print("boiler")
+    else:
+        print("neither")
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
