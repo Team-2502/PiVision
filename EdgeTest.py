@@ -38,8 +38,6 @@ def isGear(img):
 
     avg_width = avgCalc(widthCalc(edges))
     avg_height = avgCalc(widthCalc(edgesSide))
-    print("Average width: " + str(avg_width))
-    print("Average height: " + str(avg_height))
 
     if avg_width < avg_height:
         return True

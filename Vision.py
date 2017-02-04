@@ -79,12 +79,12 @@ while True:
     cv2.imshow('5', erode2)
     cv2.imshow('7', frame_edges)
 
-    if edge.isGear(frame_edges):
-        print("gear")
-    elif edge.isBoiler(frame_edges):
-        print("boiler")
-    else:
-        print("neither")
+    # if edge.isGear(frame_edges):
+    #     print("gear")
+    # elif edge.isBoiler(frame_edges):
+    #     print("boiler")
+    # else:
+    #     print("neither")
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
