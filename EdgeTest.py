@@ -1,6 +1,12 @@
 import cv2
 import numpy as np
 
+TEST_IMGS = ['HC0_N.png','VC0_C.png','VL0_G.png', 'tape.jpg']
+
+# When using edge detection, follow these 2 tips
+# 1. Grayscale helps reduce falsely detected edges
+# 2. 283 as the x value and 100 as the y value in cv2.Canny(img, x, y) works well to also reduce falsely detected images
+
 # Calculate the average of a list of numbers
 def avgCalc(widths):
     avg = 0
@@ -23,31 +29,48 @@ def widthCalc(img):
                 widths.append(counter[-1] - counter[0])
     return widths
 
-# Load tape.jpg unchanged
-img = cv2.imread('tape.jpg', -1)
+def isGear(img):
+    # Run the Canny Edge Detection Algorithm
+    edges = cv2.Canny(img,283,100)
 
-# Run the Canny Edge Detection Algorithm
-edges = cv2.Canny(img,100,200)
+    # Turn the edge detected image on its side
+    edgesSide = np.rot90(edges)
 
-# Turn the edge detected image on its side
-edgesSide = np.rot90(edges)
+    avg_width = avgCalc(widthCalc(edges))
+    avg_height = avgCalc(widthCalc(edgesSide))
+    print("Average width: " + str(avg_width))
+    print("Average height: " + str(avg_height))
 
-avg_width = avgCalc(widthCalc(edges))
-avg_height = avgCalc(widthCalc(edgesSide))
+    if avg_width < avg_height:
+        return True
+    else:
+        return False
 
-print(avg_width)
-print(avg_height)
+def isBoiler(img):
+    # Run the Canny Edge Detection Algorithm
+    edges = cv2.Canny(img, 283, 100)
 
-if avg_width > avg_height:
-    print("gear")
-else:
-    print("boiler")
+    # Turn the edge detected image on its side
+    edgesSide = np.rot90(edges)
 
-cv2.imshow("edges", edges)
-cv2.imshow("edges rotated 90 degrees", edgesSide)
+    avg_width = avgCalc(widthCalc(edges))
+    avg_height = avgCalc(widthCalc(edgesSide))
 
+    if avg_width > avg_height:
+        return True
+    else:
+        return False
 
-
-
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+if __name__ == "__main__":
+    for image in TEST_IMGS:
+        # Load tape.jpg unchanged
+        image_matrix = cv2.imread(image, 0)
+        cv2.imshow(image, cv2.Canny(image_matrix, 283, 100))
+        boiler = isBoiler(image_matrix)
+        gear = isGear(image_matrix)
+        if boiler:
+            print(image + " is a boiler")
+        elif gear:
+            print(image + " is a gear holder")
+        else:
+            print(image + " is neither")
