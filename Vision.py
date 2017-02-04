@@ -44,7 +44,7 @@ while True:
 #    on = Util.getCurrentFrameMultiplier(0.5, 0.5)
 #    off = Util.getCurrentFrameMultiplier(0.5, 0.5)
     frame = Util.getCurrentFrameMultiplier(0.5, 0.5)
-    grey_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     frame_edges = cv2.canny(grey_frame, 290, 100)
 
