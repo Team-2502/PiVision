@@ -67,7 +67,7 @@ while True:
     upper = np.array(boundary[0][1], dtype = "uint8")
 
     mask_hsv = cv2.inRange(hsv, lower, upper)
-    filtered_hsv = cv2.bitwise_and(hsv, hsv, mask = mask)
+    filtered_hsv = cv2.bitwise_and(hsv, hsv, mask = mask_hsv)
     frame_edges = cv2.Canny(filtered_hsv, 290, 100)
 
     mask = cv2.inRange(hsv, lowerBound, upperBound)
