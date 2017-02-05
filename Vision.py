@@ -78,7 +78,7 @@ while True:
     # erode = cv2.erode(outputThreshold, kernel, iterations=1)
     # erode2 = cv2.erode(threshold, kernel, iterations=5)
 
-    image, contours, hierarchy = cv2.findContours(erode2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    # image, contours, hierarchy = cv2.findContours(erode2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 #    cv2.imshow('Vid Cap', threshold)
 #    cv2.imshow('Vid Cap', outputThreshold)
 
