@@ -45,7 +45,7 @@ frame = cv2.bitwise_not(frame)
 # THE COLORS ARE IN [BLUE, GREEN, RED]
 # DO NOT FORGET!
 boundary = [
-	([56, 0, 209],[136, 50, 255])
+    ([56, 0, 209],[136, 50, 255])
 ]
 
 while True:
@@ -63,11 +63,11 @@ while True:
     #sub = cv2.subtract(on, off)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-	lower = np.array(boundary[0][0], dtype = "uint8")
+    lower = np.array(boundary[0][0], dtype = "uint8")
     upper = np.array(boundary[0][1], dtype = "uint8")
 
     mask_hsv = cv2.inRange(hsv, lower, upper)
-	filtered_hsv = cv2.bitwise_and(hsv, hsv, mask = mask)
+    filtered_hsv = cv2.bitwise_and(hsv, hsv, mask = mask)
     frame_edges = cv2.Canny(filtered_hsv, 290, 100)
 
     mask = cv2.inRange(hsv, lowerBound, upperBound)
