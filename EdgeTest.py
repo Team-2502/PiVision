@@ -61,7 +61,7 @@ def middle(img):
         mid_widths.append(r_bound - 0.5*widths[num])
 
     mid_width = avgCalc(mid_widths)
-    return mid_width
+    return mid_width - boundaries
 
 
 if __name__ == "__main__":
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         print(image + " is " + str(middle(image_matrix)) + " off center")
         if dimensions[0] > dimensions[1]:
             print(image + " is a boiler")
-        if dimensions[0] < dimensions[1]:
+        elif dimensions[0] < dimensions[1]:
             print(image + " is a gear holder")
         else:
             print(image + " is neither")
