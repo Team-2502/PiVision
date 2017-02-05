@@ -92,10 +92,10 @@ while True:
     cv2.imshow('7', frame_edges)
     cv2.imshow('8', filtered_hsv)
 
-    # if edge.isGear(frame_edges):
-    #     print("gear")
-    # elif edge.isBoiler(frame_edges):
-    #     print("boiler")
+    if edge.isGear(frame_edges):
+        print("gear")
+    elif edge.isBoiler(frame_edges):
+        print("boiler")
     # else:
     #     print("neither")
 
