@@ -61,7 +61,7 @@ def middle(img):
         mid_widths.append(r_bound - 0.5*widths[num])
 
     mid_width = avgCalc(mid_widths)
-    return mid_width - boundaries
+    return mid_width - midpoint
 
 
 if __name__ == "__main__":
