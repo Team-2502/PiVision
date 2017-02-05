@@ -18,6 +18,7 @@ Util.nw('4')
 Util.nw('5')
 Util.nw('6')
 Util.nw('7')
+Util.nw('8')
 
 def null(_):
     return
@@ -40,13 +41,18 @@ kernel = np.ones((3, 3), np.uint8)
 frame = cv2.imread('VL0_G.png')
 frame = cv2.bitwise_not(frame)
 
+# define our boundary for red in BGR
+# THE COLORS ARE IN [BLUE, GREEN, RED]
+# DO NOT FORGET!
+boundary = [
+	([56, 0, 209],[136, 50, 255])
+]
+
 while True:
 #    on = Util.getCurrentFrameMultiplier(0.5, 0.5)
 #    off = Util.getCurrentFrameMultiplier(0.5, 0.5)
     frame = Util.getCurrentFrameMultiplier(0.5, 0.5)
     grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    frame_edges = cv2.Canny(grey_frame, 290, 100)
 
     lowerBound = np.array([cv2.getTrackbarPos('0', '6'), cv2.getTrackbarPos('1', '6'), cv2.getTrackbarPos('2', '6')])
     upperBound = np.array([cv2.getTrackbarPos('3', '6'), cv2.getTrackbarPos('4', '6'), cv2.getTrackbarPos('5', '6')])
@@ -57,9 +63,15 @@ while True:
     #sub = cv2.subtract(on, off)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
+	lower = np.array(boundary[0][0], dtype = "uint8")
+    upper = np.array(boundary[0][1], dtype = "uint8")
+
+    mask_hsv = cv2.inRange(hsv, lower, upper)
+	filtered_hsv = cv2.bitwise_and(hsv, hsv, mask = mask)
+    frame_edges = cv2.Canny(filtered_hsv, 290, 100)
+
     mask = cv2.inRange(hsv, lowerBound, upperBound)
     output = cv2.bitwise_and(frame, frame, mask=mask)
-    #output = cv2.bitwise_and(hsv, hsv, mask=mask)
 
     threshold = Util.modifyThreshold(output, 10)
     outputThreshold = cv2.cvtColor(threshold, cv2.COLOR_GRAY2BGR)
@@ -78,6 +90,7 @@ while True:
     cv2.imshow('4', erode)
     cv2.imshow('5', erode2)
     cv2.imshow('7', frame_edges)
+    cv2.imshow('8', filtered_hsv)
 
     # if edge.isGear(frame_edges):
     #     print("gear")
