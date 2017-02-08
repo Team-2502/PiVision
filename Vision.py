@@ -10,27 +10,27 @@ import EdgeTest as edge
 #hsv = cv2.cvtColor(sub, cv2.COLOR_BGR2HSV)
 
 # Make 7 windows
-Util.nw('0')
-Util.nw('1')
+Util.nw('0') # frame
+Util.nw('1') # hsv
 # Util.nw('2')
 # Util.nw('3')
 # Util.nw('4')
 # Util.nw('5')
-Util.nw('6')
-Util.nw('7')
-Util.nw('8')
+# Util.nw('6')
+Util.nw('7') # frame edges
+Util.nw('8') # filtered hsv
 
 def null(_):
     return
 
 # Place a bunch of trackbars onto window 6
-cv2.createTrackbar('0', '6', 0, 255, null)
-cv2.createTrackbar('1', '6', 0, 255, null)
-cv2.createTrackbar('2', '6', 0, 255, null)
-
-cv2.createTrackbar('3', '6', 255, 255, null)
-cv2.createTrackbar('4', '6', 255, 255, null)
-cv2.createTrackbar('5', '6', 255, 255, null)
+# cv2.createTrackbar('0', '6', 0, 255, null)
+# cv2.createTrackbar('1', '6', 0, 255, null)
+# cv2.createTrackbar('2', '6', 0, 255, null)
+#
+# cv2.createTrackbar('3', '6', 255, 255, null)
+# cv2.createTrackbar('4', '6', 255, 255, null)
+# cv2.createTrackbar('5', '6', 255, 255, null)
 
 # Make a 3 by 3 matrix filled with ones
 kernel = np.ones((3, 3), np.uint8)
@@ -92,8 +92,10 @@ while True:
     cv2.imshow('7', frame_edges)
     cv2.imshow('8', filtered_hsv)
 
-    print("Midpoint: " + str(edge.middle(frame_edges)))
-    print(" :" + str(edge.objdimensions(frame_edges)))
+    cv2.imwrite("hsv.jpg", hsv)
+    
+    # print("Midpoint: " + str(edge.middle(frame_edges)))
+    # print(" :" + str(edge.objdimensions(frame_edges)))
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
