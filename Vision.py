@@ -13,7 +13,7 @@ Util.nw('8') # filtered hsv
 # THE COLORS ARE IN [BLUE, GREEN, RED]
 # DO NOT FORGET!
 boundary = [
-    ([56, 0, 209],[136, 50, 255])
+    ([120, 133, 0],[255, 255, 255])
 ]
 
 while True:
