@@ -29,7 +29,7 @@ while True:
 
     cv2.imshow('0', frame)
     cv2.imshow('7', frame_edges)
-    cv2.imshow('8', filtered_hsv)
+    cv2.imshow('8', filtered_frame)
 
     cv2.imwrite("frame.jpg", frame)
 
