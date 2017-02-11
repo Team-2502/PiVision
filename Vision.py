@@ -9,7 +9,7 @@ from networktables import NetworkTables
 
 # turn into a client to connect to a robot
 # The robot should have a static IP
-NetworkTables.initialize(server='10.25.02.2')
+NetworkTables.initialize(server='10.25.2.91')
 
 # Enable logging on our Pi
 logging.basicConfig(level=logging.DEBUG)
