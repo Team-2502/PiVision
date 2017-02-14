@@ -5,7 +5,9 @@ import Util
 import EdgeTest as edge
 import logging
 from networktables import NetworkTables
+import asyncio
 
+EVENT_LOOP = asyncio.get_event_loop()
 
 # turn into a client to connect to a robot
 # The robot should have a static IP
@@ -24,8 +26,19 @@ boundary = [
     ([120, 133, 0], [255, 255, 255])
 ]
 
+async def putData(middle, dimensions, shouldBeLogging):
+    # write relevant data to NetworkTables
+    visionTable.putNumber("offset", -1 * middle)  # we multiply by -1 because the roborio needs to move backwards
+    visionTable.putValue("dimensions-px-x", dimensions[0])
+    visionTable.putValue("dimensions-px-y", dimensions[1])
 
-while True:
+    if shouldBeLogging:
+        print("Offset: " + str(middle))
+        print("dimensions: " + str(dimensions))
+
+def processFrame():
+    global EVENT_LOOP
+
     # grab frame
     frame = Util.getCurrentFrameMultiplier(0.5, 0.5)
 
@@ -33,27 +46,10 @@ while True:
     lower = np.array(boundary[0][0], dtype="uint8")
     upper = np.array(boundary[0][1], dtype="uint8")
 
-    # filter unwanted colors out of frame
-    frame_mask = cv2.inRange(frame, lower, upper)
-    filtered_frame = cv2.bitwise_and(frame, frame, mask=frame_mask)
-    frame_edges = cv2.Canny(filtered_frame, 290, 100)
-
     # get dimensions
     dimensions = edge.objdimensions(frame_edges)
     middle = edge.middle(frame_edges)
+    EVENT_LOOP.ensure_future(putData(middle, dimensions, True))
 
-    # write relevant data to NetworkTables
-    visionTable.putNumber("offset", middle)
-    visionTable.putValue("dimensions-px-x", dimensions[0])
-    visionTable.putValue("dimensions-px-y", dimensions[1])
-
-    print("Offset: " + str(middle))
-    print("dimensions: " + str(dimensions))
-
-    # print("Midpoint: " + str(edge.middle(frame_edges)))
-    # print(" :" + str(edge.objdimensions(frame_edges)))
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-Util.cleanUp()
+EVENT_LOOP.ensure_future(processFrame())
+EVENT_LOOP.run_forever()
