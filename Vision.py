@@ -26,7 +26,8 @@ boundary = [
     ([120, 133, 0], [255, 255, 255])
 ]
 
-async def putData(middle, dimensions, shouldBeLogging):
+@asyncio.coroutine
+def putData(middle, dimensions, shouldBeLogging):
     # write relevant data to NetworkTables
     visionTable.putNumber("offset", -1 * middle)  # we multiply by -1 because the roborio needs to move backwards
     visionTable.putValue("dimensions-px-x", dimensions[0])
@@ -35,7 +36,8 @@ async def putData(middle, dimensions, shouldBeLogging):
     if shouldBeLogging:
         print("Offset: " + str(middle))
         print("dimensions: " + str(dimensions))
-
+        
+@asyncio.coroutine
 def processFrame():
     global EVENT_LOOP
 
