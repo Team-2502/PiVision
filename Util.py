@@ -1,19 +1,9 @@
 import cv2
-import serial
 import numpy as np
 
 # Initialize a camera capture.
 capture = cv2.VideoCapture(0)
 
-# Initialize the serial connection for communication between the RPi and the RoboRio.
-#ser = serial.Serial(port='/dev/ttyAMA0', 
-#                    baudrate=14400, 
-#                    parity=serial.PARITY_NONE, 
-#                    stopbits=serial.STOPBITS_ONE, 
-#                    bytesize=serial.EIGHTBITS)
-
-# Open the connection.
-#ser.open()
 
 # Capture a few frames to get the camera used to the light.
 i = 0
@@ -67,4 +57,3 @@ def cleanUp():
 def nw(name):
     #cv2.namedWindow(name, cv2.WINDOW_NORMAL)
     cv2.namedWindow(name, cv2.WINDOW_NORMAL)
-
