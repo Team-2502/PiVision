@@ -39,7 +39,6 @@ def widthCalc(img):
         widths.append(r_boundary - l_boundary)
     return widths
 
-
 def objdimensions(img):
     # Run the Canny Edge Detection Algorithm
     edges = cv2.Canny(img,283,100)
