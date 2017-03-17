@@ -54,31 +54,41 @@ def objdimensions(img):
 
     return [avg_width, avg_height]
 
-def middle(img):
+def overlay(edge, image):
+    for x, row in enumerate(image):
+        for y, pixel in enumerate(row):
+            if edge[x, y]!= 0:
+                image[x, y] = edge[x,y]
+    return image
+
+def draw_graph(list, image, color):
+    """Draws on image using the values inside list"""
+    image = image.T
+    plate = np.zeros(image.shape)
+    for x, y in enumerate(list):
+        if color:
+            plate[x, y] = np.array([255,255,255])
+        elif not color:
+            plate[x, y] = 255
+    return overlay(plate, image)
+
+def middle(img, debug=False):
     # add up all the values in each column, put into 1d numpy array
-    img = img.T
     avg = 0
     graph = np.zeros(img.shape[1])
-    for x, column in enumerate(img.T):
-        graph[x] = np.sum(column)
-        
+    for y, column in enumerate(img.T):
+        graph[y] = np.sum(column)
+
     # weighted average of values in numpy array. Value: x val; Weight: sum
-    for x in range(img.shape[1]):
-        avg += x * (graph[x]/np.sum(graph))
+    for x, val in enumerate(graph):
+        avg += x * (val/np.sum(graph))
         #print("x: " + str(x))
 
     avg = avg/img.shape[1]
-    return avg - (img.shape[1]/2)
-    
-    #midpoint = int(img.shape[1]/2)
-    #boundaries = genBoundary(img)
-    #widths = widthCalc(img)
-    #mid_widths = []
-    #for num, (l_bound, r_bound) in enumerate(boundaries):
-    #    mid_widths.append(r_bound - 0.5*widths[num])
-
-    #mid_width = avgCalc(mid_widths)
-    #return mid_width - midpoint
+    if not debug:
+        return avg - (img.shape[1]/2)
+    else:
+        return [avg - (img.shape[1]/2), draw_graph(graph, image, False)]
 
 
 if __name__ == "__main__":

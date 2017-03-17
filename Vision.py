@@ -4,6 +4,8 @@ from Utils import PiCamera
 import EdgeTest as edge
 from networktables import NetworkTables
 from Utils import nones
+from EdgeTest import overlay
+
 
 # define our boundary for red in BGR
 # THE COLORS ARE IN [BLUE, GREEN, RED]
@@ -45,11 +47,12 @@ while True:
         frame_mask[camnum] = cv2.inRange(frame, lower, upper)
         filtered_frame[camnum] = cv2.bitwise_and(frame, frame, mask = frame_mask[camnum])
         frame_edges[camnum] = cv2.cvtColor(filtered_frame[camnum], cv2.COLOR_BGR2GRAY)
-        
-        offset = edge.middle(frame_edges[camnum])
-        print(offset)
-        cv2.imshow(str(camnum), frame_edges[camnum])
-        
+
+        offset = edge.middle(frame_edges[camnum], True)
+        print(offset[0])
+
+        cv2.imshow(str(camnum), overlay(offset[1], frames[camnum])
+
         # print("Midpoint: " + str(edge.middle(frame_edges[camnum])))
 
     for x, frame_edge in enumerate(frame_edges):
