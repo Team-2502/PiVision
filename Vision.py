@@ -1,12 +1,9 @@
 import cv2
 import numpy as np
-import Util
 from Utils import PiCamera
 import EdgeTest as edge
 from networktables import NetworkTables
 from Utils import nones
-
-Util.nw('1') # frame edges
 
 # define our boundary for red in BGR
 # THE COLORS ARE IN [BLUE, GREEN, RED]
@@ -18,12 +15,12 @@ boundary = [
 lower = np.array(boundary[0][0], dtype = "uint8")
 upper = np.array(boundary[0][1], dtype = "uint8")
 
-cams = []
+cams = [PiCamera(0)]
 ##### How many cameras are we looking a
 camnum = 1
 #####
-for x in range(camnum):
-    cams.append(PiCamera(x))
+#for x in range(camnum):
+#    cams.append(PiCamera(x))
 
 
 # Initalize variables
@@ -48,14 +45,16 @@ while True:
         frame_mask[camnum] = cv2.inRange(frame, lower, upper)
         filtered_frame[camnum] = cv2.bitwise_and(frame, frame, mask = frame_mask[camnum])
         frame_edges[camnum] = cv2.cvtColor(filtered_frame[camnum], cv2.COLOR_BGR2GRAY)
-
-        # For debugging only
-        # cv2.imshow(str(camnum), frame_edges[camnum])
+        
+        offset = edge.middle(frame_edges[camnum])
+        print(offset)
+        cv2.imshow(str(camnum), frame_edges[camnum])
+        
         # print("Midpoint: " + str(edge.middle(frame_edges[camnum])))
 
-    # for x, frame_edge in enumerate(frame_edges):
-    visionTable.putNumber("offset" + str(x+1), edge.middle(frame_edge))
-
+    for x, frame_edge in enumerate(frame_edges):
+        #visionTable.putNumber("offset", edge.middle(frame_edge))
+        pass
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

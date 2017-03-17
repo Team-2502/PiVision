@@ -47,21 +47,38 @@ def objdimensions(img):
     # Turn the edge detected image on its side
     edgesSide = np.rot90(edges)
 
+
+
     avg_width = avgCalc(widthCalc(edges))
     avg_height = avgCalc(widthCalc(edgesSide))
 
     return [avg_width, avg_height]
 
 def middle(img):
-    midpoint = int(img.shape[1]/2)
-    boundaries = genBoundary(img)
-    widths = widthCalc(img)
-    mid_widths = []
-    for num, (l_bound, r_bound) in enumerate(boundaries):
-        mid_widths.append(r_bound - 0.5*widths[num])
+    # add up all the values in each column, put into 1d numpy array
+    img = img.T
+    avg = 0
+    graph = np.zeros(img.shape[1])
+    for x, column in enumerate(img.T):
+        graph[x] = np.sum(column)
+        
+    # weighted average of values in numpy array. Value: x val; Weight: sum
+    for x in range(img.shape[1]):
+        avg += x * (graph[x]/np.sum(graph))
+        #print("x: " + str(x))
 
-    mid_width = avgCalc(mid_widths)
-    return mid_width - midpoint
+    avg = avg/img.shape[1]
+    return avg - (img.shape[1]/2)
+    
+    #midpoint = int(img.shape[1]/2)
+    #boundaries = genBoundary(img)
+    #widths = widthCalc(img)
+    #mid_widths = []
+    #for num, (l_bound, r_bound) in enumerate(boundaries):
+    #    mid_widths.append(r_bound - 0.5*widths[num])
+
+    #mid_width = avgCalc(mid_widths)
+    #return mid_width - midpoint
 
 
 if __name__ == "__main__":
