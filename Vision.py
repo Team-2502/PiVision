@@ -5,7 +5,7 @@ import EdgeTest as edge
 from networktables import NetworkTables
 from Utils import nones
 from EdgeTest import overlay
-
+import time
 
 # define our boundary for red in BGR
 # THE COLORS ARE IN [BLUE, GREEN, RED]
@@ -35,11 +35,14 @@ frame_edges = base
 # Connect to RoboRIO via networktable
 NetworkTables.initialize(server='roborio-2502-frc.local')
 visionTable = NetworkTables.getTable('PiVision')
-
+ 
+oldtime = time.time() * 1000
+sequence = 0
+starttime = oldtime
 while True:
     # open eyes
     for x, cam in enumerate(cams):
-        frames[x] = cam.getCurrentFrameMultiplier(0.5, 0.5)
+        frames[x] = np.rot90(cam.getCurrentFrameMultiplier(0.5, 0.5), 3)
 
     # think about what i am seeing
     for camnum, frame in enumerate(frames):
@@ -47,19 +50,25 @@ while True:
         frame_mask[camnum] = cv2.inRange(frame, lower, upper)
         filtered_frame[camnum] = cv2.bitwise_and(frame, frame, mask = frame_mask[camnum])
         frame_edges[camnum] = cv2.cvtColor(filtered_frame[camnum], cv2.COLOR_BGR2GRAY)
-
+    
         offset = edge.middle(frame_edges[camnum], True)
-        print(offset[0])
-
-        cv2.imshow(str(camnum), overlay(offset[1], frames[camnum])
+        
+        # print(offset[0])
+        # cv2.imshow(str(camnum), frames[camnum])
 
         # print("Midpoint: " + str(edge.middle(frame_edges[camnum])))
-
+    currenttime = time.time() * 1000
     for x, frame_edge in enumerate(frame_edges):
-        #visionTable.putNumber("offset", edge.middle(frame_edge))
-        pass
+        visionTable.putNumber("offset", float(offset[0]))
+        visionTable.putNumber("sequence", float(sequence)) 
+        visionTable.putNumber("time", float(currenttime - starttime))
+        visionTable.putNumber("timeelapsed", float(currenttime - oldtime))
+        oldtime = currenttime
+        #pass
+    sequence += 1
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 Util.cleanUp()
+ 

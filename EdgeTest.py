@@ -64,31 +64,35 @@ def overlay(edge, image):
 def draw_graph(list, image, color):
     """Draws on image using the values inside list"""
     image = image.T
-    plate = np.zeros(image.shape)
-    for x, y in enumerate(list):
-        if color:
-            plate[x, y] = np.array([255,255,255])
-        elif not color:
-            plate[x, y] = 255
-    return overlay(plate, image)
+    try:
+        plate = np.zeros(image.shape)
+        for x, y in enumerate(list):
+            if color:
+                plate[x, y] = np.array([255,255,255])
+            elif not color:
+                plate[x, y] = 255
+        image = image.T
+        return overlay(plate, image)
+    except IndexError:
+        image = image.T
+        return image
 
 def middle(img, debug=False):
     # add up all the values in each column, put into 1d numpy array
     avg = 0
     graph = np.zeros(img.shape[1])
     for y, column in enumerate(img.T):
-        graph[y] = np.sum(column)
-
+        graph[y] = np.sum(column)/np.sum(img)
+    
     # weighted average of values in numpy array. Value: x val; Weight: sum
     for x, val in enumerate(graph):
-        avg += x * (val/np.sum(graph))
-        #print("x: " + str(x))
-
-    avg = avg/img.shape[1]
+        avg += x * val
+    
+    avg = avg - (img.shape[1]/2)
     if not debug:
-        return avg - (img.shape[1]/2)
+        return avg
     else:
-        return [avg - (img.shape[1]/2), draw_graph(graph, image, False)]
+        return [avg, draw_graph(graph, img, False)]
 
 
 if __name__ == "__main__":
