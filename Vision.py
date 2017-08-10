@@ -7,6 +7,14 @@ from Utils import nones
 import Utils
 from EdgeTest import overlay
 import time
+import sys
+
+enableLiveFeed = False
+
+if len(sys.argv) > 1:
+    enableLiveFeed = True
+
+
 
 # define our boundary for red in BGR
 # THE COLORS ARE IN [BLUE, GREEN, RED]
@@ -40,32 +48,34 @@ visionTable = NetworkTables.getTable('PiVision')
 
 oldtime = time.time() * 1000
 sequence = 0
-starttime = oldtime
+starttime = oldtime/1000
 height = (None, None)
 offset = (None, None)
 while True:
     # open eyes
     for x, cam in enumerate(cams):
-        frames[x] = np.rot90(cam.getCurrentFrameMultiplier(0.5, 0.5), 3)
+        # frames[x] = np.rot90(cam.getCurrentFrameMultiplier(0.125, 0.125), 3)
+        frames[x] = cam.getCurrentFrameMultiplier(0.125, 0.125)
 
     # think about what i am seeing
     for camnum, frame in enumerate(frames):
         # ignore irrelevant colors
         frame_mask[camnum] = cv2.inRange(frame, lower, upper)
-        offset = edge.middle(frame_mask[camnum], True)
-        height = edge.height(frame_mask[camnum], True)
+        offset = edge.middle(frame_mask[camnum], True) # Biggest drain on FPS
+        height = edge.height(frame_mask[camnum], True) # Also probably a big drain
 
         # print(offset[0])
-        # cv2.imshow(str(camnum), frames[camnum])
+        if enableLiveFeed:
+            cv2.imshow(str(camnum), frames[camnum])
 
         # print("Midpoint: " + str(edge.middle(frame_edges[camnum])))
     currenttime = time.time() * 1000
     for x, frame_edge in enumerate(frame_mask):
-        visionTable.putNumber("offset", float(offset[0]))
-        visionTable.putNumber("sequence", float(sequence))
-        visionTable.putNumber("time", float(currenttime - starttime))
-        visionTable.putNumber("timeelapsed", float(currenttime - oldtime))
+        visionTable.putNumber("robot_offset", float(offset[0]))
+        visionTable.putNumber("fps", float(sequence/(time.time() - starttime)))
         visionTable.putNumber("height", float(height[0]))
+        visionTable.putNumber("offset", float(offset[0]))
+        # visionTable.putNumber("fps", float(sequence / (time.time() - starttime)))
         oldtime = currenttime
         # pass
     sequence += 1
