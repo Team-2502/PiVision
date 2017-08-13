@@ -8,11 +8,11 @@ done
 
 #pi@pi-2502-frc.local
 #pi@ritikm-pi
-scp $files pi@pi-2502-frc.local.local:/home/pi/.vision/
+scp $files pi@pi-2502-frc.local:/home/pi/.vision/
 echo "Deployed all files (or at least tried to)"
 
-echo "Restarting vision . . ."
-ssh pi@pi-2502-frc.local
+echo "Once the clock changes minute the vision will be ready"
+#"python /home/pi/.vision/Vision.py" | ssh pi@team2502pi.local
 echo "Complete! (or at least tried to)"
 
 

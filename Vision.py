@@ -52,17 +52,26 @@ starttime = oldtime/1000
 height = (None, None)
 offset = (None, None)
 while True:
+    if sequence % 1000 == 1:
+        print("Still running good")
     # open eyes
     for x, cam in enumerate(cams):
         # frames[x] = np.rot90(cam.getCurrentFrameMultiplier(0.125, 0.125), 3)
-        frames[x] = cam.getCurrentFrameMultiplier(0.125, 0.125)
+        if sequence == 0:
+            try:
+                frames[x] = cam.getCurrentFrameMultiplier(0.125, 0.125)
+            except AttributeError:
+                print("ERROR: Another vision process is running.\nTo fix this error, run\n$ killall python")
+                sys.exit()
+        else:
+            frames[x] = cam.getCurrentFrameMultiplier(0.125, 0.125)
 
     # think about what i am seeing
     for camnum, frame in enumerate(frames):
         # ignore irrelevant colors
         frame_mask[camnum] = cv2.inRange(frame, lower, upper)
-        offset = edge.middle(frame_mask[camnum], True) # Biggest drain on FPS
-        height = edge.height(frame_mask[camnum], True) # Also probably a big drain
+        offset = edge.middle(frame_mask[camnum], False) # Biggest drain on FPS
+        height = edge.height(frame_mask[camnum], False) # Also probably a big drain
 
         # print(offset[0])
         if enableLiveFeed:
@@ -71,10 +80,10 @@ while True:
         # print("Midpoint: " + str(edge.middle(frame_edges[camnum])))
     currenttime = time.time() * 1000
     for x, frame_edge in enumerate(frame_mask):
-        visionTable.putNumber("robot_offset", float(offset[0]))
+        visionTable.putNumber("robot_offset", float(offset))
         visionTable.putNumber("fps", float(sequence/(time.time() - starttime)))
-        visionTable.putNumber("height", float(height[0]))
-        visionTable.putNumber("offset", float(offset[0]))
+        visionTable.putNumber("height", float(height))
+        visionTable.putNumber("offset", float(offset))
         # visionTable.putNumber("fps", float(sequence / (time.time() - starttime)))
         oldtime = currenttime
         # pass
