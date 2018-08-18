@@ -10,10 +10,12 @@ import time
 import sys
 
 enableLiveFeed = False
-
+enableTerminalLogging = False
 if len(sys.argv) > 1:
     enableLiveFeed = True
 
+if len(sys.argv) > 2:
+    enableTerminalLogging = True
 
 
 # define our boundary for red in BGR
@@ -51,20 +53,22 @@ sequence = 0
 starttime = oldtime/1000
 height = (None, None)
 offset = (None, None)
+
+def getFrame():
+    multiplier = 0.5
+    return np.rot90(cam.getCurrentFrameMultiplier(0.125, 0.125), 3)
 while True:
     if sequence % 1000 == 1:
         print("Still running good")
     # open eyes
     for x, cam in enumerate(cams):
-        # frames[x] = np.rot90(cam.getCurrentFrameMultiplier(0.125, 0.125), 3)
         if sequence == 0:
             try:
-                frames[x] = cam.getCurrentFrameMultiplier(0.125, 0.125)
+                frames[x] = getFrame()
             except AttributeError:
                 print("ERROR: Another vision process is running.\nTo fix this error, run\n$ killall python")
                 sys.exit()
-        else:
-            frames[x] = cam.getCurrentFrameMultiplier(0.125, 0.125)
+        frames[x] = getFrame()
 
     # think about what i am seeing
     for camnum, frame in enumerate(frames):
@@ -76,6 +80,10 @@ while True:
         # print(offset[0])
         if enableLiveFeed:
             cv2.imshow(str(camnum), frames[camnum])
+	if enableTerminalLogging:
+            print("Height:" , height)
+            print("Offset:", offset)
+            print("###")
 
         # print("Midpoint: " + str(edge.middle(frame_edges[camnum])))
     currenttime = time.time() * 1000

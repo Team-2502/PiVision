@@ -8,7 +8,7 @@ done
 
 #pi@pi-2502-frc.local
 #pi@ritikm-pi
-scp $files pi@pi-2502-frc.local:/home/pi/.vision/
+scp $files pi@team2502pi.local:/home/pi/.vision/
 echo "Deployed all files (or at least tried to)"
 
 echo "Once the clock changes minute the vision will be ready"
