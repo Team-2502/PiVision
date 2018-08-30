@@ -1,6 +1,6 @@
 # PiVision
 
-This was written for the 2017 FRC challenge FIRST Steamworks. This code calculates the deviation of the vision target is from the center of the frame. This information is sent to the robot via NetworkTables (a library specific to FRC).
+This was written for the 2017 FRC challenge FIRST Steamworks. This code calculates the deviation of the vision target is from the center of the frame. It is currently designed to take frames from a camera that is behind a green bandpass filter (unfortunately, ours was defective).   This information is sent to the robot via NetworkTables (a library specific to FRC).
 
 ## Usage
 
